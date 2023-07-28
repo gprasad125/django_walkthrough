@@ -1,25 +1,18 @@
-# import library
-import openai
-import os
+import requests
 from dotenv import load_dotenv, find_dotenv
+import os
 
+# load from .env file
 load_dotenv(find_dotenv())
 
-# configure openai to your account 
-openai.api_key = os.environ.get("api_key")
+API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 
+# huggingface api key should be from your .env file
+headers = {"Authorization": f"Bearer {os.environ.get('huggingface_api_key')}"}
+
+
+# summarize using the huggingface inference api
 def summarize(text):
-	
-	# create prompt
-	prompt = "Write a concise summary of the following content. and aim to capture the main ideas of the exercept in a comprehensive and brief manner: \n\n\n"
-	prompt += text
-	
-	# ping model and generate a response 
-	response = openai.Completion.create(
-		engine = "text-davinci-003",
-		prompt = prompt
-	)
-	
-	# clean up response to just the actual String value and return 
-	answer = response["choices"][0]["text"].strip()
-	return answer 
+    payload = {"inputs": text}
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.json()[0]["summary_text"]
