@@ -4,7 +4,7 @@ import os
 
 load_dotenv(find_dotenv())
 
-openai.api_key = os.environ.get("openai_api_key")
+openai.api_key = os.environ.get("api_key")
 
 
 def summarize(text):
